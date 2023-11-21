@@ -1,0 +1,132 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define LONGITUD 10000
+#define NUM_EJECUCIONES 100
+
+void intercambiar(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void quicksort(int lista[], int primero, int ultimo) {
+    int pivot, i, j, temp;
+
+    if (primero < ultimo) {
+        pivot = primero;
+        i = primero;
+        j = ultimo;
+        while (i < j) {
+            while (lista[i] <= lista[pivot] && i <= ultimo) {
+                i++;
+            }
+            while (lista[j] > lista[pivot] && j >= primero) {
+                j--;
+            }
+
+            if (i < j) {
+                temp = lista[i];
+                lista[i] = lista[j];
+                lista[j] = temp;
+            }
+        }
+        temp = lista[j];
+        lista[j] = lista[pivot];
+        lista[pivot] = temp;
+        quicksort(lista, primero, j - 1);
+        quicksort(lista, j + 1, ultimo);
+    }
+}
+
+void ordenamientoDeBurbuja(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if (arr[j] > arr[j + 1])
+                intercambiar(&arr[j], &arr[j + 1]);
+}
+
+void ordenamientoPorInsercion(int arr[], int n) {
+    int i, clave, j;
+    for (i = 1; i < n; i++) {
+        clave = arr[i];
+        j = i - 1;
+
+        while (j >= 0 && arr[j] > clave) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = clave;
+    }
+}
+
+void copiarArreglo(int fuente[], int destino[], int n) {
+    for (int i = 0; i < n; i++) {
+        destino[i] = fuente[i];
+    }
+}
+
+void generarArregloAleatorio(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        arr[i] = rand() % LONGITUD;
+    }
+}
+
+void imprimirEstadisticas(double tiempos[], int n) {
+    double total = 0.0, min = tiempos[0], max = tiempos[0];
+    for (int i = 0; i < n; i++) {
+        total += tiempos[i];
+        if (tiempos[i] < min)
+            min = tiempos[i];
+        if (tiempos[i] > max)
+            max = tiempos[i];
+    }
+    printf("Tiempo Promedio: %f ms\n", total / n);
+    printf("Tiempo Minimo: %f ms\n", min);
+    printf("Tiempo Maximo: %f ms\n", max);
+}
+
+int main() {
+    int arr[LONGITUD], arrCopia[LONGITUD];
+    double tiempos[NUM_EJECUCIONES];
+    clock_t inicio, fin;
+
+    srand(time(NULL));
+    generarArregloAleatorio(arr, LONGITUD);
+
+    // Bubble Sort
+    for (int i = 0; i < NUM_EJECUCIONES; i++) {
+        copiarArreglo(arr, arrCopia, LONGITUD);
+        inicio = clock();
+        ordenamientoDeBurbuja(arrCopia, LONGITUD);
+        fin = clock();
+        tiempos[i] = ((double)(fin - inicio)) / CLOCKS_PER_SEC * 1000;
+    }
+    printf("Ordenamiento de Burbuja:\n");
+    imprimirEstadisticas(tiempos, NUM_EJECUCIONES);
+
+    // Inserción Sort
+    for (int i = 0; i < NUM_EJECUCIONES; i++) {
+        copiarArreglo(arr, arrCopia, LONGITUD);
+        inicio = clock();
+        ordenamientoPorInsercion(arrCopia, LONGITUD);
+        fin = clock();
+        tiempos[i] = ((double)(fin - inicio)) / CLOCKS_PER_SEC * 1000;
+    }
+    printf("\nOrdenamiento por Insercion Sort:\n");
+    imprimirEstadisticas(tiempos, NUM_EJECUCIONES);
+
+    // Quick Sort
+    for (int i = 0; i < NUM_EJECUCIONES; i++) {
+        copiarArreglo(arr, arrCopia, LONGITUD);
+        inicio = clock();
+        quicksort(arrCopia, 0, LONGITUD - 1);
+        fin = clock();
+        tiempos[i] = ((double)(fin - inicio)) / CLOCKS_PER_SEC * 1000;
+    }
+    printf("\nOrdenamiento Quick Sort:\n");
+    imprimirEstadisticas(tiempos, NUM_EJECUCIONES);
+
+    return 0;
+}
