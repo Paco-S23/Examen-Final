@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define LONGITUD 50000
+#define EJECUCIONES 100
+#define REPETICIONES_BUSQUEDA 1000
+
+void generarArregloOrdenado(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        arr[i] = i;
+    }
+}
+
+int busquedaSecuencial(int arr[], int n, int clave) {
+    for (int i = 0; i < n; i++) {
+        if (arr[i] == clave) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int busquedaBinaria(int arr[], int izquierda, int derecha, int clave) {
+    while (izquierda <= derecha) {
+        int medio = izquierda + (derecha - izquierda) / 2;
+        if (arr[medio] == clave) {
+            return medio;
+        }
+        if (arr[medio] < clave) {
+            izquierda = medio + 1;
+        } else {
+            derecha = medio - 1;
+        }
+    }
+    return -1;
+}
+
+void imprimirEstadisticas(double tiempos[], int n, const char *nombre) {
+    double total = 0.0, min = tiempos[0], max = tiempos[0];
+    for (int i = 0; i < n; i++) {
+        total += tiempos[i];
+        if (tiempos[i] < min) min = tiempos[i];
+        if (tiempos[i] > max) max = tiempos[i];
+    }
+    printf("%s:\n", nombre);
+    printf("Tiempo Promedio: %f ms\n", total / n);
+    printf("Tiempo Minimo: %f ms\n", min);
+    printf("Tiempo Maximo: %f ms\n", max);
+}
+
+int main() {
+    int arr[LONGITUD];
+    double tiemposSecuencial[EJECUCIONES], tiemposBinario[EJECUCIONES];
+    clock_t inicio, fin;
+
+    srand(time(NULL));
+    generarArregloOrdenado(arr, LONGITUD);
+
+    for (int i = 0; i < EJECUCIONES; i++) {
+        int clave = rand() % LONGITUD;
+        inicio = clock();
+        for (int j = 0; j < REPETICIONES_BUSQUEDA; j++) {
+            busquedaSecuencial(arr, LONGITUD, clave);
+        }
+        fin = clock();
+        tiemposSecuencial[i] = ((double) (fin - inicio)) / CLOCKS_PER_SEC / REPETICIONES_BUSQUEDA * 1000;
+    }
+    imprimirEstadisticas(tiemposSecuencial, EJECUCIONES, "Secuencial");
+
+    for (int i = 0; i < EJECUCIONES; i++) {
+        int clave = rand() % LONGITUD;
+        inicio = clock();
+        for (int j = 0; j < REPETICIONES_BUSQUEDA; j++) {
+            busquedaBinaria(arr, 0, LONGITUD - 1, clave);
+        }
+        fin = clock();
+        tiemposBinario[i] = ((double) (fin - inicio)) / CLOCKS_PER_SEC / REPETICIONES_BUSQUEDA * 1000;
+    }
+    imprimirEstadisticas(tiemposBinario, EJECUCIONES, "Busqueda Binaria");
+
+    return 0;
+}
