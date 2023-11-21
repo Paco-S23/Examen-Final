@@ -101,7 +101,7 @@ int main() {
         inicio = clock();
         ordenamientoDeBurbuja(arrCopia, LONGITUD);
         fin = clock();
-        tiempos[i] = ((double)(fin - inicio)) / CLOCKS_PER_SEC * 1000;
+        tiempos[i] = ((double)(fin - inicio)) / CLOCKS_PER_SEC ;
     }
     printf("Ordenamiento de Burbuja:\n");
     imprimirEstadisticas(tiempos, NUM_EJECUCIONES);
@@ -112,7 +112,7 @@ int main() {
         inicio = clock();
         ordenamientoPorInsercion(arrCopia, LONGITUD);
         fin = clock();
-        tiempos[i] = ((double)(fin - inicio)) / CLOCKS_PER_SEC * 1000;
+        tiempos[i] = ((double)(fin - inicio)) / CLOCKS_PER_SEC ;
     }
     printf("\nOrdenamiento por Insercion Sort:\n");
     imprimirEstadisticas(tiempos, NUM_EJECUCIONES);
@@ -123,7 +123,7 @@ int main() {
         inicio = clock();
         quicksort(arrCopia, 0, LONGITUD - 1);
         fin = clock();
-        tiempos[i] = ((double)(fin - inicio)) / CLOCKS_PER_SEC * 1000;
+        tiempos[i] = ((double)(fin - inicio)) / CLOCKS_PER_SEC ;
     }
     printf("\nOrdenamiento Quick Sort:\n");
     imprimirEstadisticas(tiempos, NUM_EJECUCIONES);
